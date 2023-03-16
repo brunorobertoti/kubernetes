@@ -3,6 +3,7 @@
 
 # Instalando haproxy
  dnf -y install haproxy
+ systemctl enable --now haproxy.service 
 
 # Editar arquivo de configuracao
  vim /etc/haproxy/haproxy.cfg
