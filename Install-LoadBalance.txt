@@ -39,4 +39,11 @@ backend app
     server  app2 127.0.0.1:5002 check
     server  app3 127.0.0.1:5003 check
     server  app4 127.0.0.1:5004 check
+# Tela de monitoramento pelo navegado
+listen stats
+    bind :8000
+    stats enable
+    stats uri /monitoring
+    stats auth username:password
+# Logo acima usuario e senha para acessar ip-do-balancer:8000    
 
