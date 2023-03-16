@@ -1,0 +1,41 @@
+ 
+# CRIEI UMA VM DO FEDORA SERVER COM 1GB DE MEMORIA 1 1 PROCESSADOR PARA SERVIR DE LOCADBALANCER/PROXY
+
+# Instalando haproxy
+ dnf -y install haproxy
+
+# Editar arquivo de configuracao
+ vim /etc/haproxy/haproxy.cfg
+ 
+
+######################################## UTILIZAR ESSA PARTE DO ARQUIVO ###################################
+frontend main
+    bind *:80
+    acl url_static       path_beg       -i /static /images /javascript /stylesheets
+    acl url_static       path_end       -i .jpg .gif .png .css .js
+
+# COMENTAR ESSA LINHA ABAIXO
+#    use_backend static          if url_static
+    default_backend             app
+
+#---------------------------------------------------------------------
+# static backend for serving up images, stylesheets and such
+#---------------------------------------------------------------------
+backend static
+    balance     roundrobin
+
+# COMENTAR ESSA LINHA ABAIXO
+#    server      static 127.0.0.1:4331 check
+
+#---------------------------------------------------------------------
+# round robin balancing between the various backends
+#---------------------------------------------------------------------
+backend app
+
+# ADICIONAR SEUS SERVIDORES COMO ABAIXO, ESSA PORTA 30311 VC PODE VER COM O COMANDO (kubectl get svc -n ingress-nginx) NO KUBERNETES MASTER
+    balance     roundrobin
+    server  k3s-master1 192.168.125.202:30311 check
+    server  app2 127.0.0.1:5002 check
+    server  app3 127.0.0.1:5003 check
+    server  app4 127.0.0.1:5004 check
+
