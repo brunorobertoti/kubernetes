@@ -1,0 +1,30 @@
+
+
+# Instalando helm
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+
+# Criando namespace 
+kubectl create namespace kubernetes-dashboard
+
+# Instalando repositorio
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+
+# Instalando kubernetes-dashboard
+helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard
+
+# Aplicando arquivos(Estao no git)
+kubectl apply -f dashboard-adminuser.yaml
+kubectl apply -f ClusterRoleBinding.yaml
+
+# Gerando token para logar 
+kubectl -n kubernetes-dashboard create token admin-user
+
+# Editando service
+kubectl edit svc kubernetes-dashboard
+
+em spec abaixo dos ips add 
+  externalIPs:
+  - 192.168.125.187 (ip do master)
+
